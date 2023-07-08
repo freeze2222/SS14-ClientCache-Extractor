@@ -1,7 +1,7 @@
 import sqlite3
 import os
 import zstandard as zstd
-
+import compare
 
 # Функция для распаковки данных сжатия ZStd
 def decompress_zstd(data):
@@ -10,9 +10,11 @@ def decompress_zstd(data):
 
 
 # Подключение к базе данных SQLite
-conn = sqlite3.connect("./content.db")
+database_path = "./content.db" if os.path.isfile("./content.db") else os.getenv("APPDATA") + \
+                                                                      "/../Local/Space station 14/launcher/content.db"
+conn = sqlite3.connect(database_path)
 cursor = conn.cursor()
-
+print(database_path)
 # Получение всех существующих ForkId
 cursor.execute("SELECT DISTINCT ForkId FROM ContentVersion")
 fork_ids = cursor.fetchall()
@@ -56,8 +58,8 @@ if content_version_id is not None:
                 file.write(decompressed_data)
 
         print(f"Файл {item_path} успешно записан.")
+    compare.run()
 else:
     print("Форк с таким ForkId не найден.")
-
 # Закрытие соединения с базой данных
 conn.close()
