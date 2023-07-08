@@ -33,7 +33,7 @@ def run():
             relative_path = os.path.relpath(file_path, folder).replace('/', '\\')
             # Чтение хеш-суммы файла
             with open(file_path, 'rb') as f:
-                file_hash = hashlib.sha256(f.read()).hexdigest().upper()
+                file_hash = hashlib.blake2b(f.read()).hexdigest().upper()
             # Проверка, отличается ли хеш-сумма файла от хеш-суммы в манифесте
 
             if manifest_hashes.get(relative_path) is None or file_hash != manifest_hashes.get(relative_path):
